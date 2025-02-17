@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import "./About.css";
 
@@ -9,9 +10,11 @@ const About = () => {
     Typescript: 40,
     React: 65,
     TailwindCSS: 70,
-  };
+  } as const;
 
-  const [progress, setProgress] = useState({
+  type SkillType = keyof typeof skillLevels;
+
+  const [progress, setProgress] = useState<Record<SkillType, number>>({
     HTML: 0,
     CSS: 0,
     Javascript: 0,
@@ -21,19 +24,21 @@ const About = () => {
   });
 
   useEffect(() => {
-    const intervalIds = Object.keys(skillLevels).map((skill) => {
-      return setInterval(() => {
-        setProgress((prev) => {
-          const newValue = Math.min(prev[skill] + 1, skillLevels[skill]);
-          return { ...prev, [skill]: newValue };
-        });
-      }, 20);
-    });
+    const intervalIds = (Object.keys(skillLevels) as SkillType[]).map(
+      (skill) => {
+        return setInterval(() => {
+          setProgress((prev) => {
+            const newValue = Math.min(prev[skill] + 1, skillLevels[skill]);
+            return { ...prev, [skill]: newValue };
+          });
+        }, 20);
+      }
+    );
 
     return () => intervalIds.forEach(clearInterval);
   }, []);
 
-  const skills = Object.keys(progress).map((skill) => ({
+  const skills = (Object.keys(progress) as SkillType[]).map((skill) => ({
     name: skill,
     percentage: progress[skill],
   }));
@@ -75,15 +80,16 @@ const About = () => {
             </h1>
             <p className="indent-4 mt-3 text-xl text-justify">
               Hello! My name is{" "}
-              <span className="text-green-400">Marcel Wang</span>, and I’m from{" "}
-              <span className="text-green-400">Tangerang, Indonesia</span>. I am
-              the youngest of five siblings. I have always been passionate about
-              technology and programming. I am highly enthusiastic about
+              <span className="text-green-400">Marcel Wang</span>, and I’m from
+              <span className="text-green-400"> Tangerang, Indonesia</span>. I
+              am the youngest of five siblings. I have always been passionate
+              about technology and programming. I am highly enthusiastic about
               learning various programming languages and enjoy spending time
               practicing coding. To me, every line of code is not just syntax
               but a challenge and an opportunity to create something innovative.
-              I am constantly learning and growing,{" "}
+              I am constantly learning and growing,
               <span className="text-green-400">
+                {" "}
                 hoping to contribute more to the world of technology.
               </span>
             </p>
